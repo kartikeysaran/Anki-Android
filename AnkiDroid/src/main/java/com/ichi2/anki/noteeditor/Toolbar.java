@@ -137,7 +137,7 @@ public class Toolbar extends FrameLayout {
                     .build().show(this, new ColorPickerPopup.ColorPickerObserver() {
                 @Override
                 public void onColorPicked(int color) {
-                    setClick(R.id.note_editor_toolbar_color_custom, "<span style=\"color:"+"#"+String.valueOf(color)+";\">","</span>");
+                    onFormat(new TextWrapper("<span style=\"color:"+color+";\">","</span>"));
                 }
             });
         });
