@@ -36,8 +36,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.ichi2.anki.CardTemplateEditor;
 import com.ichi2.anki.R;
 import com.ichi2.anki.TemporaryModel;
@@ -58,7 +61,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import timber.log.Timber;
-import top.defaults.colorpicker.ColorPickerPopup;
 
 public class Toolbar extends FrameLayout {
 
@@ -127,19 +129,22 @@ public class Toolbar extends FrameLayout {
         setClick(R.id.note_editor_toolbar_color_white,"<span style=\"color:white;\">","</span>");
         setClick(R.id.note_editor_toolbar_color_black,"<span style=\"color:black;\">","</span>");
         findViewById(R.id.note_editor_toolbar_color_custom).setOnClickListener(l -> {
-            new ColorPickerPopup.Builder(getContext()).initialColor(Color.BLACK)
-                    .enableBrightness(true)
-                    .enableAlpha(true)
-                    .okTitle("Choose")
-                    .cancelTitle("Cancel")
-                    .showIndicator(true)
-                    .showValue(true)
-                    .build().show(this, new ColorPickerPopup.ColorPickerObserver() {
-                @Override
-                public void onColorPicked(int color) {
-                    onFormat(new TextWrapper("<span style=\"color:"+color+";\">","</span>"));
-                }
-            });
+            ColorPickerDialogBuilder
+                    .with(getContext())
+                    .setTitle("Choose color")
+                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                    .density(12)
+                    .setOnColorSelectedListener(selectedColor ->  {
+                        Toast.makeText(getContext(), "onColorSelected: 0x" + Integer.toHexString(selectedColor), Toast.LENGTH_SHORT).show();
+                    })
+                    .setPositiveButton("Choose", (d, selectedColor, allColors) -> {
+                        onFormat(new TextWrapper("<span style=\"color:"+"#"+Integer.toHexString(selectedColor)+";\">","</span>"));
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) ->  {
+                        dialog.dismiss();
+                    })
+                    .build()
+                    .show();
         });
         this.mClozeIcon = findViewById(R.id.note_editor_toolbar_button_cloze);
     }
