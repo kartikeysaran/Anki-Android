@@ -58,6 +58,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import timber.log.Timber;
+import top.defaults.colorpicker.ColorPickerPopup;
 
 public class Toolbar extends FrameLayout {
 
@@ -125,6 +126,21 @@ public class Toolbar extends FrameLayout {
         setClick(R.id.note_editor_toolbar_color_yellow,"<span style=\"color:yellow;\">","</span>");
         setClick(R.id.note_editor_toolbar_color_white,"<span style=\"color:white;\">","</span>");
         setClick(R.id.note_editor_toolbar_color_black,"<span style=\"color:black;\">","</span>");
+        findViewById(R.id.note_editor_toolbar_color_custom).setOnClickListener(l -> {
+            new ColorPickerPopup.Builder(getContext()).initialColor(Color.BLACK)
+                    .enableBrightness(true)
+                    .enableAlpha(true)
+                    .okTitle("Choose")
+                    .cancelTitle("Cancel")
+                    .showIndicator(true)
+                    .showValue(true)
+                    .build().show(this, new ColorPickerPopup.ColorPickerObserver() {
+                @Override
+                public void onColorPicked(int color) {
+                    setClick(R.id.note_editor_toolbar_color_custom, "<span style=\"color:"+"#"+String.valueOf(color)+";\">","</span>");
+                }
+            });
+        });
         this.mClozeIcon = findViewById(R.id.note_editor_toolbar_button_cloze);
     }
 
